@@ -11,7 +11,8 @@ public class Main {
     private ConvertData convert = new ConvertData();
     String address;
 
-    private final String URL_BASE ="https://gutendex.com/books/";
+    private final String URL_BASE = "https://gutendex.com/books/";
+
     public void displayMenu() {
         var option = -1;
 
@@ -57,41 +58,15 @@ public class Main {
 
         }
     }
-//    private void getBook() {
-//        System.out.println("Digite o nome de um livro: ");
-//        var bookName = read.nextLine();
-//        address = URL_BASE + "?search=" + bookName.replace(" ", "%20");
-//        var json = manager.getData(address);
-//        System.out.println(address);
-//        System.out.println(json);
-//        System.out.println("Printou aqui");
-//
-//    }
 
     private void getBook() {
-        try {
-            System.out.println("Digite o nome de um livro: ");
-            var bookName = read.nextLine();
-            address = URL_BASE + "?search=" + bookName.replace(" ", "%20");
+        System.out.println("Digite o nome de um livro: ");
+        var bookName = read.nextLine();
+        address = URL_BASE + "?search=" + bookName.replace(" ", "%20");
+        var json = manager.getData(address);
+        System.out.println(json);
 
-            if (address == null || address.isEmpty()) {
-                System.out.println("Endereço nulo ou vazio");
-                return;
-            }
-            if (manager == null) {
-                System.out.println("Manager não foi instanciado");
-                return;
-            }
-            System.out.println("Endereço montado: " + address);
 
-            var json = manager.getData(address);
-
-            System.out.println("Resposta do JSON:");
-            System.out.println(json);
-            System.out.println("Printou aqui");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
 
