@@ -3,10 +3,9 @@ package rluispdev.literalurasembd.main;
 import rluispdev.literalurasembd.model.Author;
 import rluispdev.literalurasembd.model.Book;
 import rluispdev.literalurasembd.model.BookData;
-import rluispdev.literalurasembd.service.ApiResponse;
 import rluispdev.literalurasembd.service.ConvertData;
 import rluispdev.literalurasembd.service.ManagerGutendex;
-
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Main {
@@ -67,38 +66,62 @@ public class Main {
         }
     }
 
+    public void getBook() {
+        String searchTerm = getSearchTerm();
+        ConvertData apiResponse = getApiResponse(searchTerm);
 
-    private void getBook() {
-        System.out.print("Enter the search term: ");
-        String searchTerm = read.nextLine();
-        String json = manager.getData( URL_BASE + "?search=" + searchTerm.replace(" ", "%20"));
-        // Converter a string JSON em um objeto ApiResponse
-        ApiResponse apiResponse = converter.getData(json, ApiResponse.class);
-
-        // Verificar se há resultados na ApiResponse
-        // Verificar se há resultados na ApiResponse
-        if (apiResponse != null && apiResponse.getResults() != null && !apiResponse.getResults().isEmpty()) {
-            // Iterar sobre os resultados (assumindo que você quer lidar com o primeiro livro encontrado)
-            BookData firstBook = apiResponse.getResults().get(0);
-            // Criar um objeto Book a partir dos dados do primeiro livro
-            Book book = new Book(firstBook);
-            // Imprimir os detalhes do livro
-            System.out.println("Book Name: " + book.getBookName());
-
-            // Verifique se a lista de autores não é nula e não está vazia
-            if (book.getAuthors() != null && !book.getAuthors().isEmpty()) {
-                System.out.println("Autor : " + book.getAuthors().get(0).getName()); // Supondo que você esteja interessado apenas no primeiro autor
-            } else {
-                System.out.println("Autor : Unknown Author");
-            }
-            System.out.println("Disponivel: " + book.getLanguage());
+        if (apiResponse != null && !apiResponse.getResults().isEmpty()) {
+            Optional<BookData> optionalBookData = findBook(apiResponse);
+            optionalBookData.ifPresentOrElse(
+                    bookData -> printBookInfo(new Book(bookData)),
+                    () -> System.out.println("Nenhum livro encontrado para o termo de pesquisa: " + searchTerm)
+            );
         } else {
-            System.out.println("No books found for the search term: " + searchTerm);
+            System.out.println("Nenhum livro encontrado para o termo de pesquisa: " + searchTerm);
         }
     }
+
+    private void printBookInfo(Book book) {
+        String bookName = book.getBookName();
+        String authorName = getAuthorName(book);
+        String language = getLanguageName(book.getLanguage());
+
+        System.out.println("Livro: " + bookName + " | Autor: " + authorName + " | Disponível em: " + language);
+    }
+
+    private String getSearchTerm() {
+        System.out.print("Digite o título do livro: ");
+        return read.nextLine();
+    }
+
+    private ConvertData getApiResponse(String searchTerm) {
+        String json = manager.getData(URL_BASE + "?search=" + searchTerm.replace(" ", "%20"));
+        return converter.getData(json, ConvertData.class);
+    }
+
+    private Optional<BookData> findBook(ConvertData apiResponse) {
+        return apiResponse.getResults().stream().findFirst();
+    }
+
+    private String getAuthorName(Book book) {
+        return book.getAuthors().stream()
+                .findFirst()
+                .map(Author::getName)
+                .orElse("Unknown Author");
+    }
+
+    private String getLanguageName(String languageCode) {
+        switch (languageCode) {
+            case "pt":
+                return "Português";
+            case "en":
+                return "Inglês";
+            default:
+                return languageCode; // Use o código da língua original se não for pt ou en
+        }
+    }
+
+
 }
-
-
-
 
 
