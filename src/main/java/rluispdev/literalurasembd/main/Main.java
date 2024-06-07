@@ -12,8 +12,6 @@ public class Main {
     private Scanner read = new Scanner(System.in);
     private ManagerGutendex manager = new ManagerGutendex();
     private ConvertData converter = new ConvertData();
-
-
     private final String URL_BASE = "https://gutendex.com/books/";
 
     public void displayMenu() {
@@ -21,8 +19,10 @@ public class Main {
 
         while (option != 0) {
             var menu = """
-                    ---------------
+                    _____________________
+                    
                     Escolha o número de sua opção:
+                    
                     1 - buscar livro pelo título
                     2 - listar livros registrados
                     3 - listar autores registrados
@@ -85,8 +85,18 @@ public class Main {
         String bookName = book.getBookName();
         String authorName = getAuthorName(book);
         String language = getLanguageName(book.getLanguage());
+        Integer downloads = book.getDownload();
 
-        System.out.println("Livro: " + bookName + " | Autor: " + authorName + " | Disponível em: " + language);
+        System.out.printf("""
+                   _____________________
+                   
+                   Livro: %s
+                   Autor: %s
+                   Disponível em: %s
+                   Nº de downloads: %d 
+                   """, bookName, authorName, language, downloads);
+
+
     }
 
     private String getSearchTerm() {
@@ -99,8 +109,8 @@ public class Main {
         return converter.getData(json, ConvertData.class);
     }
 
-    private Optional<BookData> findBook(ConvertData apiResponse) {
-        return apiResponse.getResults().stream().findFirst();
+    private Optional<BookData> findBook(ConvertData converter) {
+        return converter.getResults().stream().findFirst();
     }
 
     private String getAuthorName(Book book) {
@@ -120,8 +130,6 @@ public class Main {
                 return languageCode; // Use o código da língua original se não for pt ou en
         }
     }
-
-
 }
 
 
