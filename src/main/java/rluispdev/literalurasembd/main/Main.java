@@ -23,7 +23,7 @@ public class Main {
                     
                     Escolha o número de sua opção:
                     
-                    1 - buscar livro pelo título
+                    1 - Pesquisar livro
                     2 - listar livros registrados
                     3 - listar autores registrados
                     4 - listar autores vivos em um determinado ano
@@ -32,38 +32,46 @@ public class Main {
                                     
                     """;
             System.out.println(menu);
-            option = read.nextInt();
-            read.nextLine();
 
-            switch (option) {
-                case 1:
-                    getBook();
-                    break;
-                case 2:
-                    System.out.println("listando livros");
-                    break;
-                case 3:
-                    System.out.println("Listando autores");
-                    break;
-                case 4:
-                    System.out.println("Listando autores vivos em determinado ano");
-                    break;
-                case 5:
-                    System.out.println("Listando autores mortos em determinado ano");
-                    break;
 
-                case 6:
-                    System.out.println("Listar livros com mais de 500 downloads");
-                    break;
-                case 0:
-                    System.out.println("Saindo...");
-                    break;
-                default:
-                    System.out.println("Opcão inválida, tente novamente.");
-                    continue;
+//            option = read.nextInt();
+//            read.nextLine();
+
+            try {
+                option = Integer.parseInt(read.nextLine());
+
+                switch (option) {
+                    case 1:
+                        getBook();
+                        break;
+                    case 2:
+                        System.out.println("listando livros");
+                        break;
+                    case 3:
+                        System.out.println("Listando autores");
+                        break;
+                    case 4:
+                        System.out.println("Listando autores vivos em determinado ano");
+                        break;
+                    case 5:
+                        System.out.println("Listando autores mortos em determinado ano");
+                        break;
+
+                    case 6:
+                        System.out.println("Listar livros com mais de 500 downloads");
+                        break;
+                    case 0:
+                        System.out.println("Saindo...");
+                        break;
+                    default:
+                        System.out.println("Opcão inexistente, tente novamente.");
+                        break;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Por favor, digite um número inteiro válido.");
             }
-
         }
+        read.close();
     }
 
     public void getBook() {
@@ -74,7 +82,8 @@ public class Main {
             Optional<BookData> optionalBookData = findBook(apiResponse);
             optionalBookData.ifPresentOrElse(
                     bookData -> printBookInfo(new Book(bookData)),
-                    () -> System.out.println("Nenhum livro encontrado para o termo de pesquisa: " + searchTerm)
+                    () -> System.out.println("Nenhum livro encontrado para o termo de pesquisa: "
+                            + searchTerm)
             );
         } else {
             System.out.println("Nenhum livro encontrado para o termo de pesquisa: " + searchTerm);
@@ -95,8 +104,6 @@ public class Main {
                    Disponível em: %s
                    Nº de downloads: %d 
                    """, bookName, authorName, language, downloads);
-
-
     }
 
     private String getSearchTerm() {
@@ -105,7 +112,8 @@ public class Main {
     }
 
     private ConvertData getApiResponse(String searchTerm) {
-        String json = manager.getData(URL_BASE + "?search=" + searchTerm.replace(" ", "%20"));
+        String json = manager.getData(URL_BASE + "?search=" +
+                searchTerm.replace(" ", "%20"));
         return converter.getData(json, ConvertData.class);
     }
 
@@ -127,7 +135,7 @@ public class Main {
             case "en":
                 return "Inglês";
             default:
-                return languageCode; // Use o código da língua original se não for pt ou en
+                return languageCode;
         }
     }
 }
