@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>rluispdev</groupId>
-	<artifactId>literalurasembd</artifactId>
+	<artifactId>literalura</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>literalurasembd</name>
 	<description>Demo project for Spring Boot</description>

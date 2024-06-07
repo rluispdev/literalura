@@ -1,8 +1,4 @@
-package rluispdev.literalurasembd.service;
-
-import rluispdev.literalurasembd.model.BookData;
-
-import java.util.List;
+package rluispdev.literalura.service;
 
 public interface IConvertData {
     <T> T getData(String json, Class<T> tClass);

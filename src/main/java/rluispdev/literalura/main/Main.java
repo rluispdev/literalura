@@ -1,10 +1,10 @@
-package rluispdev.literalurasembd.main;
+package rluispdev.literalura.main;
 
-import rluispdev.literalurasembd.model.Author;
-import rluispdev.literalurasembd.model.Book;
-import rluispdev.literalurasembd.model.BookData;
-import rluispdev.literalurasembd.service.ConvertData;
-import rluispdev.literalurasembd.service.ManagerGutendex;
+import rluispdev.literalura.model.Author;
+import rluispdev.literalura.model.Book;
+import rluispdev.literalura.model.BookData;
+import rluispdev.literalura.service.ConvertData;
+import rluispdev.literalura.service.ManagerGutendex;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -16,7 +16,6 @@ public class Main {
 
     public void displayMenu() {
         var option = -1;
-
         while (option != 0) {
             var menu = """
                     _____________________
@@ -32,10 +31,6 @@ public class Main {
                                     
                     """;
             System.out.println(menu);
-
-
-//            option = read.nextInt();
-//            read.nextLine();
 
             try {
                 option = Integer.parseInt(read.nextLine());
@@ -89,7 +84,6 @@ public class Main {
             System.out.println("Nenhum livro encontrado para o termo de pesquisa: " + searchTerm);
         }
     }
-
     private void printBookInfo(Book book) {
         String bookName = book.getBookName();
         String authorName = getAuthorName(book);
@@ -105,35 +99,36 @@ public class Main {
                    Nº de downloads: %d 
                    """, bookName, authorName, language, downloads);
     }
-
     private String getSearchTerm() {
         System.out.print("Digite o título do livro: ");
         return read.nextLine();
     }
-
     private ConvertData getApiResponse(String searchTerm) {
         String json = manager.getData(URL_BASE + "?search=" +
                 searchTerm.replace(" ", "%20"));
         return converter.getData(json, ConvertData.class);
     }
-
     private Optional<BookData> findBook(ConvertData converter) {
         return converter.getResults().stream().findFirst();
     }
-
     private String getAuthorName(Book book) {
         return book.getAuthors().stream()
                 .findFirst()
                 .map(Author::getName)
                 .orElse("Unknown Author");
     }
-
     private String getLanguageName(String languageCode) {
         switch (languageCode) {
             case "pt":
                 return "Português";
             case "en":
                 return "Inglês";
+            case "es":
+                return "Espanhol";
+            case "fr":
+                return "Francês";
+            case "it":
+                return "Italiano";
             default:
                 return languageCode;
         }

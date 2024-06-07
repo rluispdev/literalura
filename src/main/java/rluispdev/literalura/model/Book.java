@@ -1,4 +1,4 @@
-package rluispdev.literalurasembd.model;
+package rluispdev.literalura.model;
 
 import java.util.List;
 

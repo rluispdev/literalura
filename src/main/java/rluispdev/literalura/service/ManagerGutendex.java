@@ -1,4 +1,4 @@
-package rluispdev.literalurasembd.service;
+package rluispdev.literalura.service;
 
 import java.io.IOException;
 import java.net.URI;

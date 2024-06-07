@@ -1,15 +1,15 @@
-package rluispdev.literalurasembd;
+package rluispdev.literalura;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import rluispdev.literalurasembd.main.Main;
+import rluispdev.literalura.main.Main;
 
 @SpringBootApplication
-public class LiteralurasembdApplication implements CommandLineRunner {
+public class LiteraluraApplication implements CommandLineRunner {
 
 	public static void main(String[] args) {
-		SpringApplication.run(LiteralurasembdApplication.class, args);
+		SpringApplication.run(LiteraluraApplication.class, args);
 	}
 
 	@Override

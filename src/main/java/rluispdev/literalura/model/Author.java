@@ -1,4 +1,4 @@
-package rluispdev.literalurasembd.model;
+package rluispdev.literalura.model;
 
 public class Author {
     private String name;
