@@ -1,8 +1,8 @@
 package rluispdev.literalura.main;
 
-import rluispdev.literalura.model.Author;
 import rluispdev.literalura.model.Book;
 import rluispdev.literalura.model.BookData;
+import rluispdev.literalura.repository.BookRepository;
 import rluispdev.literalura.service.ConvertData;
 import rluispdev.literalura.service.ManagerGutendex;
 import java.util.Optional;
@@ -13,6 +13,12 @@ public class Main {
     private ManagerGutendex manager = new ManagerGutendex();
     private ConvertData converter = new ConvertData();
     private final String URL_BASE = "https://gutendex.com/books/";
+    private BookRepository repository;
+
+    public Main(BookRepository repository) {
+        this.repository = repository;
+    }
+
 
     public void displayMenu() {
         var option = -1;
@@ -68,6 +74,8 @@ public class Main {
         }
         read.close();
     }
+    
+
 
     public void getBook() {
         String searchTerm = getSearchTerm();
@@ -75,8 +83,11 @@ public class Main {
 
         if (apiResponse != null && !apiResponse.getResults().isEmpty()) {
             Optional<BookData> optionalBookData = findBook(apiResponse);
+
             optionalBookData.ifPresentOrElse(
-                    bookData -> printBookInfo(new Book(bookData)),
+                    bookData -> {Book book = new Book(bookData);
+                        repository.save(book);
+                       printBookInfo(book); },
                     () -> System.out.println("Nenhum livro encontrado para o termo de pesquisa: "
                             + searchTerm)
             );

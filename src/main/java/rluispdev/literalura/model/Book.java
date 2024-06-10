@@ -2,6 +2,7 @@ package rluispdev.literalura.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 @Entity
 @Table(name = "books")
@@ -14,7 +15,9 @@ public class Book {
     private  String bookName;
     private  String language;
     private  Integer download;
-   // private List<Author> authors;
+   //Adicionar o autor
+    @Transient
+    private List<Author> authors = new ArrayList<>();
 
     public Book(BookData bookData){
         this.bookName = bookData.bookName();
@@ -51,13 +54,14 @@ public class Book {
         this.download = Integer.valueOf(download);
     }
 
-//    public List<Author> getAuthors() {
-//        return authors;
-//    }
 
-//    public void setAuthors(List<Author> authors) {
-//        this.authors = authors;
-//    }
+    public List<Author> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(List<Author> authors) {
+        this.authors = authors;
+    }
 
     @Override
     public String toString() {
