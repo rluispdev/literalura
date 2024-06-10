@@ -86,7 +86,7 @@ public class Main {
     }
     private void printBookInfo(Book book) {
         String bookName = book.getBookName();
-        String authorName = getAuthorName(book);
+       // String authorName = getAuthorName(book);
         String language = getLanguageName(book.getLanguage());
         Integer downloads = book.getDownload();
 
@@ -97,7 +97,7 @@ public class Main {
                    Autor: %s
                    Disponível em: %s
                    Nº de downloads: %d 
-                   """, bookName, authorName, language, downloads);
+                   """, bookName, "authorName", language, downloads);
     }
     private String getSearchTerm() {
         System.out.print("Digite o título do livro: ");
@@ -111,12 +111,12 @@ public class Main {
     private Optional<BookData> findBook(ConvertData converter) {
         return converter.getResults().stream().findFirst();
     }
-    private String getAuthorName(Book book) {
-        return book.getAuthors().stream()
-                .findFirst()
-                .map(Author::getName)
-                .orElse("Unknown Author");
-    }
+//    private String getAuthorName(Book book) {
+//        return book.getAuthors().stream()
+//                .findFirst()
+//                .map(Author::getName)
+//                .orElse("Unknown Author");
+//    }
     private String getLanguageName(String languageCode) {
         switch (languageCode) {
             case "pt":
