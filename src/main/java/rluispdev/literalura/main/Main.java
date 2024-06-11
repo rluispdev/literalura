@@ -5,6 +5,9 @@ import rluispdev.literalura.model.BookData;
 import rluispdev.literalura.repository.BookRepository;
 import rluispdev.literalura.service.ConvertData;
 import rluispdev.literalura.service.ManagerGutendex;
+
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -46,7 +49,7 @@ public class Main {
                         getBook();
                         break;
                     case 2:
-                        System.out.println("listando livros");
+                        getlistBooks();
                         break;
                     case 3:
                         System.out.println("Listando autores");
@@ -74,8 +77,6 @@ public class Main {
         }
         read.close();
     }
-    
-
 
     public void getBook() {
         String searchTerm = getSearchTerm();
@@ -144,6 +145,16 @@ public class Main {
                 return languageCode;
         }
     }
+
+    private void getlistBooks() {
+        List<Book> books = repository.findAll();
+        books.stream()
+                .forEach(System.out::println);
+
+    }
+
+
+
 }
 
 

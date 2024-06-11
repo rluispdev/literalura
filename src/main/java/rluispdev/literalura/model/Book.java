@@ -19,6 +19,8 @@ public class Book {
     @Transient
     private List<Author> authors = new ArrayList<>();
 
+    public Book(){}
+
     public Book(BookData bookData){
         this.bookName = bookData.bookName();
         this.language = bookData.languages() != null && !bookData.languages().isEmpty() ? bookData.languages().get(0) : "N/A";
