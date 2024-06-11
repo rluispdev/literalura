@@ -1,15 +1,15 @@
 package rluispdev.literalura.main;
 
+import rluispdev.literalura.model.Author;
 import rluispdev.literalura.model.Book;
 import rluispdev.literalura.model.BookData;
+import rluispdev.literalura.repository.AuthorRepository;
 import rluispdev.literalura.repository.BookRepository;
 import rluispdev.literalura.service.ConvertData;
 import rluispdev.literalura.service.ManagerGutendex;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     private Scanner read = new Scanner(System.in);
@@ -17,9 +17,11 @@ public class Main {
     private ConvertData converter = new ConvertData();
     private final String URL_BASE = "https://gutendex.com/books/";
     private BookRepository repository;
+    private final AuthorRepository authorRepository;
 
-    public Main(BookRepository repository) {
+    public Main(BookRepository repository, AuthorRepository authorRepository) {
         this.repository = repository;
+        this.authorRepository = authorRepository;
     }
 
 
@@ -52,7 +54,7 @@ public class Main {
                         getlistBooks();
                         break;
                     case 3:
-                        System.out.println("Listando autores");
+                        getlistAuthors();
                         break;
                     case 4:
                         System.out.println("Listando autores vivos em determinado ano");
@@ -86,19 +88,30 @@ public class Main {
             Optional<BookData> optionalBookData = findBook(apiResponse);
 
             optionalBookData.ifPresentOrElse(
-                    bookData -> {Book book = new Book(bookData);
+                    bookData -> {
+                        Book book = new Book(bookData);
+
+                        // Salvar autores usando streams
+                        List<Author> authors = book.getAuthors().stream()
+                                .map(authorRepository::save) // Salva cada autor e mapeia para o autor salvo
+                                .collect(Collectors.toList()); // Coleta os autores em uma lista
+
+                        book.setAuthors(authors);
+
                         repository.save(book);
-                       printBookInfo(book); },
-                    () -> System.out.println("Nenhum livro encontrado para o termo de pesquisa: "
-                            + searchTerm)
+                        printBookInfo(book);
+                    },
+                    () -> System.out.println("Nenhum livro encontrado para o termo de pesquisa: " + searchTerm)
             );
         } else {
             System.out.println("Nenhum livro encontrado para o termo de pesquisa: " + searchTerm);
         }
     }
+
+
     private void printBookInfo(Book book) {
         String bookName = book.getBookName();
-       // String authorName = getAuthorName(book);
+        String authorName = getAuthorName(book);
         String language = getLanguageName(book.getLanguage());
         Integer downloads = book.getDownload();
 
@@ -109,7 +122,7 @@ public class Main {
                    Autor: %s
                    Disponível em: %s
                    Nº de downloads: %d 
-                   """, bookName, "authorName", language, downloads);
+                   """, bookName, authorName , language, downloads);
     }
     private String getSearchTerm() {
         System.out.print("Digite o título do livro: ");
@@ -123,12 +136,12 @@ public class Main {
     private Optional<BookData> findBook(ConvertData converter) {
         return converter.getResults().stream().findFirst();
     }
-//    private String getAuthorName(Book book) {
-//        return book.getAuthors().stream()
-//                .findFirst()
-//                .map(Author::getName)
-//                .orElse("Unknown Author");
-//    }
+    private String getAuthorName(Book book) {
+        return book.getAuthors().stream()
+                .findFirst()
+                .map(Author::getName)
+                .orElse("Unknown Author");
+    }
     private String getLanguageName(String languageCode) {
         switch (languageCode) {
             case "pt":
@@ -148,11 +161,27 @@ public class Main {
 
     private void getlistBooks() {
         List<Book> books = repository.findAll();
-        books.stream()
-                .forEach(System.out::println);
+        books.forEach(b -> System.out.println(b.toString()));
 
     }
 
+    private void getlistAuthors() {
+        List<Author> authors = authorRepository.findAll();
+
+        authors.forEach(author -> {
+            if (author.getBook() != null) {
+                author.getBook().getAuthors().stream()
+                        .filter(bookAuthor -> bookAuthor.getId().equals(author.getId()))
+                        .findFirst()
+                        .ifPresent(bookAuthor -> {
+                            author.setBirth_year(bookAuthor.getBirth_year());
+                            author.setDeath_year(bookAuthor.getDeath_year());
+                        });
+            }
+
+            System.out.println(author.toString());
+        });
+    }
 
 
 }

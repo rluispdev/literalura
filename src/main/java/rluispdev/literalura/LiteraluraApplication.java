@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import rluispdev.literalura.main.Main;
+import rluispdev.literalura.repository.AuthorRepository;
 import rluispdev.literalura.repository.BookRepository;
 
 @SpringBootApplication
@@ -15,9 +16,13 @@ private BookRepository repository;
 		SpringApplication.run(LiteraluraApplication.class, args);
 	}
 
+	@Autowired
+	private AuthorRepository authorRepository;
+
+
 	@Override
 	public void run(String... args) throws Exception {
-		Main main = new Main(repository);
+		Main main = new Main(repository, authorRepository);
 		main.displayMenu();
 	}
 }

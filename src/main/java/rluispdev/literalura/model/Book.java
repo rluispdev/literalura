@@ -15,8 +15,9 @@ public class Book {
     private  String bookName;
     private  String language;
     private  Integer download;
+
    //Adicionar o autor
-    @Transient
+   @OneToMany(fetch = FetchType.EAGER)
     private List<Author> authors = new ArrayList<>();
 
     public Book(){}
@@ -25,7 +26,7 @@ public class Book {
         this.bookName = bookData.bookName();
         this.language = bookData.languages() != null && !bookData.languages().isEmpty() ? bookData.languages().get(0) : "N/A";
         this.download = bookData.download();
-        //this.authors = bookData.author();
+        this.authors = bookData.author();
     }
 
     public Long getId() { return id;}
@@ -68,6 +69,6 @@ public class Book {
     @Override
     public String toString() {
        return
-             "Nome do livro: " + bookName + "Autor(a): " + "Configurar na relacao" + ", Linguagem: " + language + ", Quantidade de downloads: " + download;
+             "Nome do livro: " + bookName +  ", Linguagem: " + language + ", Quantidade de downloads: " + download;
     }
 }
