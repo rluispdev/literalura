@@ -18,6 +18,7 @@ public class Main {
     private final String URL_BASE = "https://gutendex.com/books/";
     private BookRepository repository;
     private final AuthorRepository authorRepository;
+    Author author = new Author();
 
     public Main(BookRepository repository, AuthorRepository authorRepository) {
         this.repository = repository;
@@ -91,12 +92,14 @@ public class Main {
                     bookData -> {
                         Book book = new Book(bookData);
 
+
                         // Salvar autores usando streams
-                        List<Author> authors = book.getAuthors().stream()
+                        List<Author> authors = author.getAuhtors().stream()
                                 .map(authorRepository::save) // Salva cada autor e mapeia para o autor salvo
                                 .collect(Collectors.toList()); // Coleta os autores em uma lista
 
-                        book.setAuthors(authors);
+                        author.setAuhtors(authors);
+
 
                         repository.save(book);
                         printBookInfo(book);
@@ -137,7 +140,7 @@ public class Main {
         return converter.getResults().stream().findFirst();
     }
     private String getAuthorName(Book book) {
-        return book.getAuthors().stream()
+        return author.getAuhtors().stream()
                 .findFirst()
                 .map(Author::getName)
                 .orElse("Unknown Author");
@@ -169,8 +172,8 @@ public class Main {
         List<Author> authors = authorRepository.findAll();
 
         authors.forEach(author -> {
-            if (author.getBook() != null) {
-                author.getBook().getAuthors().stream()
+            if (author.getAuhtors() != null) {
+                author.getAuhtors().stream()
                         .filter(bookAuthor -> bookAuthor.getId().equals(author.getId()))
                         .findFirst()
                         .ifPresent(bookAuthor -> {

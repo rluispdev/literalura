@@ -2,6 +2,9 @@ package rluispdev.literalura.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "authors")
 
@@ -12,16 +15,25 @@ public class Author {
 
 
     private Long id;
-
     private String name;
     private int birth_year;
     private int death_year;
 
-    @ManyToOne
-    private Book book;
+    @ManyToMany
+    @JoinTable(name = "author_collaboration",
+            joinColumns = @JoinColumn(name = "author_id"),
+            inverseJoinColumns = @JoinColumn(name = "collaborator_id"))
+    private List<Author> auhtors = new ArrayList<>();
 
     public Author() { }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -36,7 +48,7 @@ public class Author {
     }
 
     public void setBirth_year(int birth_year) {
-        this.birth_year = birth_year; // Corrigido para atribuir corretamente o valor passado
+        this.birth_year = birth_year;
     }
 
     public int getDeath_year() {
@@ -44,23 +56,15 @@ public class Author {
     }
 
     public void setDeath_year(int death_year) {
-        this.death_year = death_year; // Corrigido para atribuir corretamente o valor passado
+        this.death_year = death_year;
     }
 
-    public Long getId() {
-        return id;
+    public List<Author> getAuhtors() {
+        return auhtors;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
+    public void setAuhtors(List<Author> auhtors) {
+        this.auhtors = auhtors;
     }
 
     @Override

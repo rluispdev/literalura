@@ -17,17 +17,29 @@ public class Book {
     private  Integer download;
 
    //Adicionar o autor
-   @OneToMany(fetch = FetchType.EAGER)
-    private List<Author> authors = new ArrayList<>();
 
-    public Book(){}
+    @ManyToOne(cascade = CascadeType.ALL) // Adiciona cascade
+    @JoinColumn(name = "author_id")
+    private Author author;
 
-    public Book(BookData bookData){
+    public Book() {}
+
+    public Book(BookData bookData) {
         this.bookName = bookData.bookName();
         this.language = bookData.languages() != null && !bookData.languages().isEmpty() ? bookData.languages().get(0) : "N/A";
         this.download = bookData.download();
-        this.authors = bookData.author();
+
+        // Verifica se bookData.author() retorna uma lista
+        if (bookData.author() instanceof List) {
+            List<Author> authors = (List<Author>) bookData.author();
+            // Seleciona o primeiro autor da lista, se a lista não estiver vazia
+            this.author = authors != null && !authors.isEmpty() ? authors.get(0) : null;
+        } else {
+            // Lança uma exceção se bookData.author() não for do tipo esperado
+            throw new IllegalArgumentException("Expected a List of authors but got: " + bookData.author().getClass().getName());
+        }
     }
+
 
     public Long getId() { return id;}
 
@@ -57,14 +69,14 @@ public class Book {
         this.download = Integer.valueOf(download);
     }
 
-
-    public List<Author> getAuthors() {
-        return authors;
-    }
-
-    public void setAuthors(List<Author> authors) {
-        this.authors = authors;
-    }
+//
+//    public List<Author> getAuthors() {
+//        return (List<Author>) author;
+//    }
+//
+//    public void setAuthors(List<Author> authors) {
+//        this.author = (Author) authors;
+//    }
 
     @Override
     public String toString() {
