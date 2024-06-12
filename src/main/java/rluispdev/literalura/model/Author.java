@@ -12,8 +12,6 @@ public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-
-
     private Long id;
     private String name;
     private int birth_year;
@@ -23,7 +21,7 @@ public class Author {
     @JoinTable(name = "author_collaboration",
             joinColumns = @JoinColumn(name = "author_id"),
             inverseJoinColumns = @JoinColumn(name = "collaborator_id"))
-    private List<Author> auhtors = new ArrayList<>();
+    private List<Author> collaborators = new ArrayList<>();
 
     public Author() { }
 
@@ -59,12 +57,12 @@ public class Author {
         this.death_year = death_year;
     }
 
-    public List<Author> getAuhtors() {
-        return auhtors;
+    public List<Author> getCollaborators() {
+        return collaborators;
     }
 
-    public void setAuhtors(List<Author> auhtors) {
-        this.auhtors = auhtors;
+    public void setCollaborators(List<Author> collaborators) {
+        this.collaborators = collaborators;
     }
 
     @Override

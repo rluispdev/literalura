@@ -16,7 +16,7 @@ public class Book {
     private  String language;
     private  Integer download;
 
-   //Adicionar o autor
+    //Adicionar o autor
 
     @ManyToOne(cascade = CascadeType.ALL) // Adiciona cascade
     @JoinColumn(name = "author_id")
@@ -69,18 +69,21 @@ public class Book {
         this.download = Integer.valueOf(download);
     }
 
-//
-//    public List<Author> getAuthors() {
-//        return (List<Author>) author;
-//    }
-//
-//    public void setAuthors(List<Author> authors) {
-//        this.author = (Author) authors;
-//    }
+
+    public Author getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
 
     @Override
     public String toString() {
-       return
-             "Nome do livro: " + bookName +  ", Linguagem: " + language + ", Quantidade de downloads: " + download;
+        return
+                ", bookName='" + bookName + '\'' +
+                ", language='" + language + '\'' +
+                ", download=" + download;
+
     }
 }
