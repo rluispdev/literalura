@@ -11,6 +11,7 @@ import rluispdev.literalura.repository.BookRepository;
 @SpringBootApplication
 public class LiteraluraApplication implements CommandLineRunner {
 @Autowired
+
 private BookRepository repository;
 	public static void main(String[] args) {
 		SpringApplication.run(LiteraluraApplication.class, args);
@@ -26,3 +27,5 @@ private BookRepository repository;
 		main.displayMenu();
 	}
 }
+
+

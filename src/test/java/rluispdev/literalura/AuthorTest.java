@@ -28,7 +28,7 @@ public class AuthorTest {
         assertEquals(2023, author.getDeath_year());
 
         // Adiciona um colaborador para testar a desserialização de uma lista
-        Author collaborator = new Author();
+        Author collaborator = new Author(authorData);
         collaborator.setName("John Smith");
         author.getCollaborators().add(collaborator);
 
