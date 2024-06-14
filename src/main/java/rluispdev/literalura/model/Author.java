@@ -19,31 +19,11 @@ public class Author {
 
     public Author() { }
 
-    public Author(String name, int birth_year, int death_year) {
-        this.name = name;
-        this.birth_year = birth_year;
-        this.death_year = death_year;
-    }
-
     public Author(AuthorData authorData) {
         this.name = authorData.name();
-        this.birth_year = authorData.birth_year();
-        this.death_year = authorData.death_year();
+        this.birth_year = authorData.birth_year() != null ? authorData.birth_year() : 0;
+        this.death_year = authorData.death_year() != null ? authorData.death_year() : 0;
     }
-
-
-//    public Author(String name, int birthYear, int deathYear) {
-//        this.name = name;
-//        this.birthYear = birthYear;
-//        this.deathYear = deathYear;
-//    }
-
-
-//    public Author(AuthorData authorData){
-//        this.name = authorData.name();
-//        this.birth_year = authorData.birth_year();
-//        this.death_year = authorData.death_year();
-//    }
 
     public Long getId() {
         return id;
@@ -76,14 +56,6 @@ public class Author {
     public void setDeath_year(int death_year) {
         this.death_year = death_year;
     }
-
-//    public List<Author> getAuthors() {
-//        return author;
-//    }
-//
-//    public void setAuthors(List<Author> authors) {
-//        this.author = authors;
-//    }
 
     @Override
     public String toString() {

@@ -13,12 +13,12 @@ import rluispdev.literalura.repository.BookRepository;
 
 
 public class BookService {
-
-    private final AuthorRepository authorRepository;
-    private final BookRepository bookRepository;
     private final ManagerGutendex manager = new ManagerGutendex();
     private final ConvertData converter = new ConvertData();
     private final String URL_BASE = "https://gutendex.com/books/";
+    private final AuthorRepository authorRepository;
+    private final BookRepository bookRepository;
+    private final Scanner read = new Scanner(System.in);
 
     public BookService(AuthorRepository authorRepository, BookRepository bookRepository) {
         this.authorRepository = authorRepository;
@@ -42,26 +42,70 @@ public class BookService {
     }
 
     private void processBookData(BookData bookData) {
-        for (AuthorData authorData : bookData.authors()) {
-            Author author = getOrCreateAuthor(authorData);
+        List<AuthorData> authors = bookData.authors();
+        if (authors.isEmpty()) {
+            Author author = getOrCreateAuthor(new AuthorData("Sem informação do autor", null, null));
             Book book = createBook(bookData, author);
-            saveBook(book);
-            printBookInfo(book);
+            confirmAndSaveBook(book);
+        } else {
+            for (AuthorData authorData : authors) {
+                Author author = getOrCreateAuthor(authorData);
+                Book book = createBook(bookData, author);
+                confirmAndSaveBook(book);
+            }
         }
     }
 
     private Author getOrCreateAuthor(AuthorData authorData) {
-        return authorRepository.findByName(authorData.name())
-                .orElseGet(() -> {
-                    Author author = new Author(authorData);
-                    return authorRepository.save(author);
-                });
+        String name = authorData.name();
+        Integer birthYear = authorData.birth_year();
+        Integer deathYear = authorData.death_year();
+
+        if (name == null || name.isEmpty()) {
+            name = "Sem informação do autor";
+        }
+
+        Author author = authorRepository.findByName(name).orElse(null);
+
+        if (author == null) {
+            author = new Author(authorData);
+            authorRepository.save(author);
+        }
+
+        return author;
     }
 
     private Book createBook(BookData bookData, Author author) {
         Book book = new Book(bookData);
         book.setAuthor(author);
         return book;
+    }
+
+    public void confirmAndSaveBook(Book book) {
+        String bookName = book.getBookName();
+        String authorName = book.getAuthor() != null ? book.getAuthor().getName() : "Unknown Author";
+
+        Optional<Book> existingBook = bookRepository.findByBookNameAndAuthor_Name(bookName, authorName);
+
+        if (existingBook.isPresent()) {
+            System.out.println("Livro encontrado no banco de dados com o mesmo título e autor:");
+            printBookInfo(existingBook.get());
+            System.out.println("Este livro já está registrado no banco de dados.");
+            return;
+        }
+
+        System.out.println("Novo livro encontrado:");
+        printBookInfo(book);
+
+        System.out.print("Deseja salvar este livro? (s/n): ");
+        String response = read.nextLine();
+
+        if (response.equalsIgnoreCase("s")) {
+            saveBook(book);
+            System.out.println("Livro salvo com sucesso!");
+        } else {
+            System.out.println("Livro descartado.");
+        }
     }
 
     private void saveBook(Book book) {
@@ -81,11 +125,10 @@ public class BookService {
                Autor: %s
                Disponível em: %s
                Nº de downloads: %d 
-               """, bookName, authorName , language, downloads);
+               """, bookName, authorName, language, downloads);
     }
 
     private String getSearchTerm() {
-        Scanner read = new Scanner(System.in);
         System.out.print("Digite o título do livro: ");
         return read.nextLine();
     }
@@ -98,6 +141,8 @@ public class BookService {
     private Optional<BookData> findBook(ConvertData converter) {
         return converter.getResults().stream().findFirst();
     }
+
+
 
     private String getLanguageName(String languageCode) {
         switch (languageCode) {
@@ -114,10 +159,5 @@ public class BookService {
             default:
                 return languageCode;
         }
-    }
-
-    public void getlistBooks() {
-        List<Book> books = bookRepository.findAll();
-        books.forEach(b -> System.out.println(b.toString()));
     }
 }

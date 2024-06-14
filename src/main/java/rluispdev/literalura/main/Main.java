@@ -39,7 +39,7 @@ public class Main {
                         bookService.getBook();
                         break;
                     case 2:
-                        bookService.getlistBooks();
+
                         break;
                     case 3:
                         // Implementar a lógica para listar autores registrados
