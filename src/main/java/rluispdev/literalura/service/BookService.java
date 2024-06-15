@@ -216,6 +216,7 @@ public class BookService {
         }
     }
 
+
     // Obtém informações resumidas do autor para listagem
     private String getAuthorInfo(Author author) {
         return " • Autor(a): " + author.getName();
@@ -224,7 +225,14 @@ public class BookService {
     // Obtém os autores vivos em um determinado ano
     public List<Author> getAuthorsAliveInYear() {
         System.out.println("Para ver os autores vivos em determinado ano, digite o ano: ");
-        int year = read.nextInt();
+        int year;
+        try {
+            year = read.nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println("Entrada inválida. Por favor, insira um número inteiro.");
+            read.next(); // Limpa a entrada inválida
+            return Collections.emptyList();
+        }
 
         if (year < 0) {
             System.out.println("Ano inválido. Por favor, insira um ano válido.");
