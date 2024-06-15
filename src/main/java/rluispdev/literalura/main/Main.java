@@ -1,6 +1,9 @@
 package rluispdev.literalura.main;
 
+import java.util.List;
 import java.util.Scanner;
+
+import rluispdev.literalura.model.Book;
 import rluispdev.literalura.service.BookService;
 import rluispdev.literalura.repository.AuthorRepository;
 import rluispdev.literalura.repository.BookRepository;
@@ -39,18 +42,17 @@ public class Main {
                         bookService.getBook();
                         break;
                     case 2:
-
+                        bookService.getAllBooks();
                         break;
                     case 3:
-                        // Implementar a lógica para listar autores registrados
+                      bookService.getAllAuthors();
                         break;
                     case 4:
-                        System.out.println("Listando autores vivos em determinado ano");
-                        // Implementar a lógica para listar autores vivos em um determinado ano
+                        bookService.getAuthorsAliveInYear();
+
                         break;
                     case 5:
-                        System.out.println("Listando livros em um determinado idioma");
-                        // Implementar a lógica para listar livros em um determinado idioma
+                        searchBooksByLanguage();
                         break;
                     case 0:
                         System.out.println("Saindo...");
@@ -66,4 +68,19 @@ public class Main {
         read.close();
     }
 
+    public void searchBooksByLanguage() {
+        System.out.println("Digite o idioma dos livros que deseja buscar:");
+        String language = read.nextLine();
+
+        List<Book> books = bookService.findBooksByLanguage(language);
+
+        if (books.isEmpty()) {
+            System.out.println("Nenhum livro encontrado no idioma " + language);
+        } else {
+            System.out.println("Livros encontrados no idioma " + language + ":");
+            for (Book book : books) {
+                System.out.println(book.getBookName());
+            }
+        }
+    }
 }

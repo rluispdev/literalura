@@ -14,8 +14,8 @@ public class Author {
 
     @Column(unique = true)
     private String name;
-    private int birth_year;
-    private int death_year;
+    private Integer birth_year;
+    private Integer death_year;
 
     public Author() { }
 
@@ -41,7 +41,7 @@ public class Author {
         this.name = name;
     }
 
-    public int getBirth_year() {
+    public Integer getBirth_year() {
         return birth_year;
     }
 
